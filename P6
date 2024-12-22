@@ -1,0 +1,24 @@
+//P6
+#include <mpi.h>
+#include <stdio.h>
+
+int main(int argc, char** argv) {
+    int rank, size, mangoes_picked, total_mangoes;
+
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    // Each robot (process) picks mangoes equal to its rank + 1
+    mangoes_picked = rank + 1;
+
+    // Calculate the total mangoes using MPI_Reduce
+    MPI_Reduce(&mangoes_picked, &total_mangoes, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+    if (rank == 0) {
+        printf("Total mangoes picked by %d robots: %d\n", size, total_mangoes);
+    }
+
+    MPI_Finalize();
+    return 0;
+}
